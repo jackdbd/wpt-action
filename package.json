@@ -1,0 +1,77 @@
+{
+  "name": "wpt-action",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Unofficial GitHub action to run tests with the WebPageTest REST API",
+  "author": "Giacomo Debidda <jackdebidda@gmail.com>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/jackdbd/wpt-action",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackdbd/wpt-action.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jackdbd/wpt-action/issues"
+  },
+  "keywords": [
+    "actions",
+    "github",
+    "monitoring",
+    "node",
+    "perfmatters",
+    "performance",
+    "sitespeed",
+    "web",
+    "web-performance",
+    "webpagetest",
+    "webperf"
+  ],
+  "scripts": {
+    "action": "node dist/index.js",
+    "prebundle": "run-s clean format format-check lint",
+    "bundle": "ncc build src/main.ts --out dist --target es2015 --minify --license licenses.txt --stats-out dist/stats.json",
+    "bundle:analyze": "webpack-bundle-analyzer dist/stats.json",
+    "bundle:run": "./run-action",
+    "clean": "rm -rf coverage dist",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint {src,__tests__}/**/*.ts",
+    "nuke": "npm run clean && rm -rf node_modules package-lock.json",
+    "prepare": "husky install",
+    "release": "semantic-release --debug",
+    "test": "jest",
+    "pretest:ci": "npm run bundle",
+    "test:ci": "jest --ci --coverage"
+  },
+  "dependencies": {
+    "@actions/core": "^1.3.0",
+    "wpt-api-client": "^1.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/git": "^9.0.0",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^14.14.9",
+    "@typescript-eslint/parser": "^4.8.1",
+    "@vercel/ncc": "^0.25.1",
+    "eslint": "^7.17.0",
+    "eslint-plugin-github": "^4.1.1",
+    "eslint-plugin-jest": "^24.1.3",
+    "husky": "^6.0.0",
+    "jest": "^26.6.3",
+    "jest-circus": "^26.6.3",
+    "js-yaml": "^3.14.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "2.2.1",
+    "semantic-release": "^17.4.3",
+    "ts-jest": "^26.4.4",
+    "typescript": "^4.1.3",
+    "webpack-bundle-analyzer": "^4.4.2"
+  }
+}

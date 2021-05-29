@@ -1,0 +1,75 @@
+name: 'wpt unofficial action'
+description: 'Run performance audits with WebPageTest'
+author: 'Giacomo Debidda'
+
+inputs:
+  api_key:
+    description: 'WebPageTest API key.'
+    required: true
+  block_urls:
+    description: >
+      Requests to these URLs will be blocked. Useful for blocking any
+      third-party scripts on the page you are testing.
+  browser:
+    description: >
+      Browser to use for the test. Keep in mind that not all WebPageTest
+      locations support all browsers.
+    default: 'Chrome'
+  connectivity:
+    description: 'Connection profile to use for the test.'
+    default: 'Cable'
+  disable_javascript:
+    description: 'If `true`, WebPageTest will block any JavaScript on the page.'
+    default: false
+  emulate_mobile:
+    description: >
+      If set to `true`, Chrome will emulate a mobile browser by adjusting the
+      screen resolution, UA string and providing a fixed viewport.
+    default: false
+  first_view_only:
+    description: >
+      Set this to `true` to skip the Repeat View test; set it to `false` to run
+      a test against both the first view and the repeat view for a given test.
+    default: false
+  label:
+    description: >
+      A label for the test. Handy for identifying the test on the WebPageTest
+      web UI.
+  location:
+    description: 'Identifier for a WebPageTest server.'
+    default: 'Dulles'
+  pingback:
+    description: >
+      URL to ping when the test is complete.
+      The test ID will be passed as an `id` parameter.
+  private:
+    description: 'Whethere the test should be visible in the public history log.'
+    default: true
+  runs:
+    description: 'Number of runs to perform in a test.'
+    default: 1
+  tcpdump:
+    description: 'If true, WebPageTest will capture TCP packets using tcpdump.'
+    default: false
+  url:
+    description: 'URL to test with WebPageTest.'
+    required: true
+  video:
+    description: 'Whether to create a filmstrip to show how a web page loads.'
+    default: false
+  wpt_server:
+    description: 'WebPageTest server'
+    default: 'www.webpagetest.org'
+
+outputs:
+  data:
+    description: >
+      Object containing the WebPageTest test id and links to WPT results.
+
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+
+branding:
+  icon: 'clock'
+  color: 'blue'

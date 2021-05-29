@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "lib": ["es6"],
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "outDir": "./lib",
+    "removeComments": true,
+    "rootDir": "./src",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es6"
+  },
+  "exclude": ["./node_modules"],
+  "include": ["./src/**/*.ts"]
+}

@@ -1,0 +1,93 @@
+name: 'CI'
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  push:
+    branches:
+      - main
+      - 'releases/*'
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  test:
+    name: 🔍 Test on [${{ matrix.os }}, Node ${{ matrix.node }}]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: ['12.x', '14.17.0']
+    steps:
+      - name: 🛎️ Checkout repo
+        uses: actions/checkout@v2
+      - name: 🖥️ Setup Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: 👨‍💻 Install dependencies
+        run: npm ci
+      - name: 🔍 Test
+        env:
+          INPUT_API_KEY: ${{ secrets.INPUT_API_KEY }}
+          INPUT_URL: https://www.google.com/
+        run: npm run test:ci
+      - name: ⬆️ Upload coverage report to Coveralls
+        continue-on-error: true
+        # https://github.com/coverallsapp/github-action
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  action-main:
+    name: ⏱️ Run action @main
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎️ Checkout repo
+        uses: actions/checkout@v2
+      - name: Run test using WebPageTest API
+        id: wpt
+        # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#example-using-versioned-actions
+        uses: jackdbd/wpt-action@main
+        with:
+          api_key: ${{ secrets.INPUT_API_KEY }}
+          url: https://github.com/trending
+      - name: Dump data
+        run: echo "${{ steps.wpt.outputs.data }}"
+
+  action-v1-0-0:
+    name: ⏱️ Run action @v1.0.0
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎️ Checkout repo
+        uses: actions/checkout@v2
+      - name: Run test using WebPageTest API
+        id: wpt
+        uses: jackdbd/wpt-action@v1.0.0
+        with:
+          api_key: ${{ secrets.INPUT_API_KEY }}
+          url: https://github.com/trending
+      - name: Dump data
+        run: echo "${{ steps.wpt.outputs.data }}"
+
+  release:
+    name: 📣 Release
+    needs: [test]
+    # needs: [test, action-main] # TODO: use this as soon as the API KEY is ok
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎️ Checkout repo
+        uses: actions/checkout@v2
+      - name: 🖥️ Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: 👨‍💻 Install dependencies
+        run: npm ci
+      - name: 📦 Bundle action
+        run: npm run bundle
+      - name: 📣 Release with semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run release
