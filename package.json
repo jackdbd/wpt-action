@@ -1,7 +1,7 @@
 {
   "name": "wpt-action",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Unofficial GitHub action to run tests with the WebPageTest REST API",
   "author": "Giacomo Debidda <jackdebidda@gmail.com>",
   "license": "MIT",
